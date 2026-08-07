@@ -1,4 +1,4 @@
-import { PDFDocument, PageSizes } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 
 export interface ConvertOptions {
   pageSize: 'a4' | 'fit';
@@ -7,19 +7,20 @@ export interface ConvertOptions {
 }
 
 export async function convertImagesToPdf(
-  fileList: File[],
-  options: ConvertOptions = { pageSize: 'a4', orientation: 'portrait', margin: 'small' }
-): Promise {
+  files: File[],
+  options: ConvertOptions
+): Promise<Blob> {
   const pdfDoc = await PDFDocument.create();
 
-  const marginValues = {
+  const marginMap = {
     none: 0,
     small: 20,
     large: 40,
   };
-  const margin = marginValues[options.margin];
 
-  for (const file of fileList) {
+  const margin = marginMap[options.margin];
+
+  for (const file of files) {
     const arrayBuffer = await file.arrayBuffer();
     let image;
 
@@ -31,47 +32,48 @@ export async function convertImagesToPdf(
       continue;
     }
 
-    let pageWidth: number;
-    let pageHeight: number;
+    const { width: imgWidth, height: imgHeight } = image;
+
+    let pageWidth = imgWidth + margin * 2;
+    let pageHeight = imgHeight + margin * 2;
 
     if (options.pageSize === 'a4') {
-      const [baseW, baseH] = PageSizes.A4;
-      if (options.orientation === 'landscape') {
-        pageWidth = baseH;
-        pageHeight = baseW;
+      if (options.orientation === 'portrait') {
+        pageWidth = 595.28;
+        pageHeight = 841.89;
       } else {
-        pageWidth = baseW;
-        pageHeight = baseH;
+        pageWidth = 841.89;
+        pageHeight = 595.28;
       }
-    } else {
-      pageWidth = image.width + margin * 2;
-      pageHeight = image.height + margin * 2;
     }
 
     const page = pdfDoc.addPage([pageWidth, pageHeight]);
 
-    const printableWidth = pageWidth - margin * 2;
-    const printableHeight = pageHeight - margin * 2;
+    const availableWidth = pageWidth - margin * 2;
+    const availableHeight = pageHeight - margin * 2;
 
-    const imgScale = Math.min(
-      printableWidth / image.width,
-      printableHeight / image.height
+    const scale = Math.min(
+      availableWidth / imgWidth,
+      availableHeight / imgHeight
     );
 
-    const drawWidth = image.width * imgScale;
-    const drawHeight = image.height * imgScale;
+    const drawWidth = imgWidth * scale;
+    const drawHeight = imgHeight * scale;
 
-    const xPos = margin + (printableWidth - drawWidth) / 2;
-    const yPos = margin + (printableHeight - drawHeight) / 2;
+    const x = (pageWidth - drawWidth) / 2;
+    const y = (pageHeight - drawHeight) / 2;
 
     page.drawImage(image, {
-      x: xPos,
-      y: yPos,
+      x,
+      y,
       width: drawWidth,
       height: drawHeight,
     });
   }
 
   const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  // Fixed TypeScript buffer compatibility issue by casting to ArrayBuffer
+  const buffer = pdfBytes.buffer as ArrayBuffer;
+  
+  return new Blob([buffer], { type: 'application/pdf' });
 }
