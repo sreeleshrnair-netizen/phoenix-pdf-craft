@@ -24,3 +24,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* --- AdSense Auto-Collapse & Blank Gap Fixes --- */
+
+/* Force unfilled or empty AdSense slots to collapse to zero height */
+ins.adsbygoogle[data-ad-status="unfilled"],
+ins.adsbygoogle[data-adsbygoogle-status="done"][data-ad-status="unfilled"] {
+  display: none !important;
+  height: 0 !important;
+}
+
+/* Prevent default dark background placeholders on pending ad blocks */
+ins.adsbygoogle {
+  background: transparent !important;
+  background-color: transparent !important;
+}
