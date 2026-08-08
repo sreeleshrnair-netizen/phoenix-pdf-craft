@@ -2,6 +2,7 @@
 
 import { useState, useEffect, DragEvent } from 'react';
 import { convertImagesToPdf, ConvertOptions } from '@/lib/imageToPdf';
+import AdBanner from '@/components/AdBanner';
 import {
   UploadCloud,
   Trash2,
@@ -150,6 +151,9 @@ export default function JpgToPdfPage() {
             Ultra-fast visual PDF builder with custom page layouts. Zero upload delays, zero server retention.
           </p>
         </div>
+
+        {/* Top Banner Ad Place */}
+        <AdBanner dataAdSlot="1234567890" />
 
         {files.length === 0 ? (
           <div className="max-w-2xl mx-auto">
@@ -375,7 +379,10 @@ export default function JpgToPdfPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+        {/* Bottom Banner Ad Place */}
+        <AdBanner dataAdSlot="0987654321" />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4">
               <ShieldCheck className="w-5 h-5" />
