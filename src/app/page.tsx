@@ -143,7 +143,8 @@ export default function JpgToPdfPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <div className="text-center max-w-2xl mx-auto mb-10">
+        {/* Main Header */}
+        <div className="text-center max-w-2xl mx-auto mb-8">
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white via-slate-100 to-slate-400">
             Transform Images to PDF
           </h1>
@@ -152,9 +153,7 @@ export default function JpgToPdfPage() {
           </p>
         </div>
 
-        {/* Top Banner Ad Place */}
-        <AdBanner dataAdSlot="1234567890" />
-
+        {/* Main Workspace (Directly under header - zero distraction) */}
         {files.length === 0 ? (
           <div className="max-w-2xl mx-auto">
             <div
@@ -379,10 +378,13 @@ export default function JpgToPdfPage() {
           </div>
         )}
 
-        {/* Bottom Banner Ad Place */}
-        <AdBanner dataAdSlot="0987654321" />
+        {/* Relocated Non-Intrusive Ad Banner (Under tool, above features) */}
+        <div className="mt-12 mb-8">
+          <AdBanner dataAdSlot="1234567890" />
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        {/* Feature Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4">
               <ShieldCheck className="w-5 h-5" />
